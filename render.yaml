@@ -1,0 +1,18 @@
+# Render Blueprint for Command Center (Next.js). The engine is a separate service (Superintelligence-Engine).
+services:
+  - type: web
+    name: superintelligence-command-center
+    runtime: node
+    plan: free
+    region: ohio
+    branch: main
+    autoDeploy: true
+    buildCommand: git submodule update --init && npm install --no-audit --no-fund && npm run build
+    startCommand: npm start -- -p $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - {key: NODE_VERSION, value: "22"}
+      - {key: NEXT_TELEMETRY_DISABLED, value: "1"}
+      - {key: ENGINE_API_URL, sync: false}               # server-side engine base URL
+      - {key: NEXT_PUBLIC_ENGINE_ORIGIN, sync: false}    # browser-visible engine origin (build time)
+      - {key: NEXT_PUBLIC_ACADEMY_ORIGIN, sync: false}   # companion app origin (build time)

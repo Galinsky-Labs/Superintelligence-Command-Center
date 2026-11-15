@@ -16,6 +16,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: node scripts/validate-pr-registry.mjs
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - run: npm run test:built
