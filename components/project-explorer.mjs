@@ -2,6 +2,7 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {WORKSPACE_DOMAINS} from '@superintelligence/ui';
 import {ProjectPortalClient} from '../vendor/engine/packages/ui/src/project-portal.mjs';
+import ArtifactCompare from './artifact-compare.mjs';
 import {readInspectorPercent,saveInspectorPercent,keyboardInspectorPercent,optionalBrowserStorage,inspectorPercentFromPointer} from './workspace-layout.mjs';
 
 const PIN_LIMIT=500;
@@ -149,7 +150,8 @@ export default function ProjectExplorer({engineOrigin='',domain='research',onOpe
    h('section',{'aria-label':'Primary artifact inspector',className:'professional-inspector'},
      h('h4',null,'Primary inspector'),
      artifact?h('div',null,h('p',null,'Artifact '+artifact),
-       ...versions.map((v,i)=>h('p',{key:String(v.revision)+'-'+i},describeRevision(v))))
+       ...versions.map((v,i)=>h('p',{key:String(v.revision)+'-'+i},describeRevision(v))),
+       h(ArtifactCompare,{versions,onRestore:null}))
        :h('p',null,'Choose an artifact above.')),
    h('div',{className:'professional-inspector-divider',role:'separator',tabIndex:0,
       'aria-label':'Resize artifact inspectors','aria-orientation':'vertical',
