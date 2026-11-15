@@ -1,5 +1,6 @@
 "use client";
 import React,{useEffect,useState} from 'react';
+import {useEngineSession} from './engine-session.mjs';
 const OPERATION_HINTS={
  code:['code.','coding.','text.'],music:['music.','audio.'],poetry:['text.','writing.'],
  'persuasive-writing':['text.','writing.'],research:['research.','text.','search.'],
@@ -19,17 +20,18 @@ function loadPreference(domain){
  return null;
 }
 export default function ModelControls({domain}){
+ const session=useEngineSession();
  const [usage,setUsage]=useState('personal'),[models,setModels]=useState([]),[status,setStatus]=useState('checking');
  const [quality,setQuality]=useState('balanced'),[selected,setSelected]=useState(null),[comparison,setComparison]=useState([]);
  const eligible=availableModels(models,domain);
  useEffect(()=>{const prior=loadPreference(domain);setUsage(['personal','commercial'].includes(prior?.usage)?prior.usage:'personal');setQuality(['speed','balanced','quality'].includes(prior?.quality)?prior.quality:'balanced');setSelected(prior?.modelId||null);setComparison([])},[domain]);
  useEffect(()=>{let live=true;const abort=new AbortController();
   setStatus('checking');setModels([]);
-  fetch('/api/models?usage='+encodeURIComponent(usage),{cache:'no-store',signal:abort.signal})
+  fetch('/api/models?usage='+encodeURIComponent(usage)+(session.tenantId?'&tenant='+encodeURIComponent(session.tenantId):''),{cache:'no-store',signal:abort.signal})
    .then(async r=>{const result=await r.json();if(live){setModels(Array.isArray(result.items)?result.items:[]);setStatus(r.ok?'connected':result.status||'unavailable')}})
    .catch(()=>{if(live)setStatus('unavailable')});
   return()=>{live=false;abort.abort()};
- },[usage]);
+ },[usage,session.tenantId,session.status]);
  useEffect(()=>{if(status==='connected'&&selected&&!eligible.some(m=>m.id===selected))setSelected(null)},[selected,domain,usage,models,status]);
  function save(modelId=selected,nextQuality=quality){
   try{localStorage.setItem('command.model-settings.v1.'+domain,JSON.stringify({modelId,quality:nextQuality,usage}))}catch{}
