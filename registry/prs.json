@@ -293,7 +293,10 @@
           "unitId": "SIE-016"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-010",
@@ -327,7 +330,10 @@
           "unitId": "SIE-027"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-011",
@@ -381,7 +387,10 @@
           "unitId": "SIE-015"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-013",
@@ -407,7 +416,10 @@
           "unitId": "SIE-004"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-014",
@@ -433,7 +445,10 @@
           "unitId": "SIE-014"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-015",
@@ -486,7 +501,10 @@
           "unitId": "SIE-007"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        22
+      ]
     },
     {
       "id": "SCC-017",

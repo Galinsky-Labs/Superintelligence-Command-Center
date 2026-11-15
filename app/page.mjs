@@ -63,6 +63,7 @@ function CommandCenter(){
      React.createElement('div',{className:'command-header-tools'},
        React.createElement(CommandPalette,{active,onChoose:domain=>{setActive(domain);setMessage('')}}),
        React.createElement('span',{className:'connection-status',role:'status','aria-live':'polite'},'Engine: '+engine.status),
+       React.createElement('a',{className:'launcher-trigger',href:'/manage'},'Operations'),
        React.createElement(SessionBadge))),
    React.createElement('div',{className:'app-columns',style:{'--workspace-nav-width':navWidth+'px'}},
      React.createElement('nav',{'aria-label':'AI workspaces',className:'app-nav'},
