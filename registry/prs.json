@@ -103,7 +103,10 @@
           "unitId": "SIE-007"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        21
+      ]
     },
     {
       "id": "SCC-004",
@@ -186,7 +189,9 @@
         "Layout survives refresh and app switching on same device.",
         "Keyboard resizing and restoring defaults work without pointer input."
       ],
-      "prs": [],
+      "prs": [
+        17
+      ],
       "externalDependencies": [],
       "externalPrerequisites": []
     },
@@ -207,14 +212,19 @@
         "A long-running provider job remains inspectable after relaunch.",
         "Cancelled/failed job status matches worker state rather than optimistic UI."
       ],
-      "prs": [],
+      "prs": [
+        18
+      ],
       "externalDependencies": [
         {
           "repository": "Galinsky-Labs/Superintelligence-Engine",
           "unitId": "SIE-017"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        21
+      ]
     },
     {
       "id": "SCC-008",
@@ -246,7 +256,10 @@
           "unitId": "SIE-014"
         }
       ],
-      "externalPrerequisites": []
+      "externalPrerequisites": [],
+      "contributingPrs": [
+        21
+      ]
     },
     {
       "id": "SCC-009",
@@ -333,7 +346,9 @@
         "Restore revision without deleting later versions.",
         "Differences and parent/source metadata stay legible for mixed media."
       ],
-      "prs": [],
+      "prs": [
+        19
+      ],
       "externalDependencies": [
         {
           "repository": "Galinsky-Labs/Superintelligence-Engine",

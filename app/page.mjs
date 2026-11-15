@@ -1,15 +1,23 @@
 "use client";
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {WorkspaceShell,ToolPanel,DomainTool,WORKSPACE_DOMAINS,ProjectPortal} from '@superintelligence/ui';
 import CommandPalette from '../components/command-palette.mjs';
 import ModelControls from '../components/model-controls.mjs';
 import ProjectExplorer from '../components/project-explorer.mjs';
 import JobTray from '../components/job-tray.mjs';
+import Workbench from '../components/workbench.mjs';
+import {EngineSessionProvider,SessionBadge,useEngineSession} from '../components/engine-session.mjs';
+import {engineJobClient} from '../components/engine-jobs.mjs';
 
 import {DEFAULT_NAV_WIDTH,MIN_NAV_WIDTH,MAX_NAV_WIDTH,readNavWidth,saveNavWidth,keyboardNavWidth,optionalBrowserStorage,navWidthFromPointer} from '../components/workspace-layout.mjs';
 const names={code:'Code',music:'Music',poetry:'Poetry','persuasive-writing':'Persuasive writing',research:'Research',legislation:'Legislation',image:'Images',video:'Film & video',voice:'Voice',data:'Data',workflow:'Workflows'};
-const controls=[{id:'objective',kind:'textarea',label:'Project objective',description:'Define what you want to accomplish. External AI execution is unavailable until an authorized provider and spending controls are connected.',rows:5}];
-export default function Page(){
+const controls=[{id:'objective',kind:'textarea',label:'Project objective',description:'Notes on what you want to accomplish. Kept in this browser tab; use the AI workbench above to generate and save work to the engine.',rows:5}];
+export default function Page(){return React.createElement(EngineSessionProvider,null,React.createElement(CommandCenter))}
+function CommandCenter(){
+ const session=useEngineSession();
+ const [origin,setOrigin]=useState('');
+ useEffect(()=>{setOrigin(window.location.origin)},[]);
+ const jobs=useMemo(()=>engineJobClient(session.client),[session.client]);
  const [engine,setEngine]=useState({status:'checking'});
  const [active,setActive]=useState('research');
  const [drafts,setDrafts]=useState({});
@@ -54,7 +62,8 @@ export default function Page(){
      React.createElement('div',{className:'brand'},React.createElement('span',{className:'brand-mark','aria-hidden':'true'},"▣"),React.createElement('span',null,"Superintelligence Command Center")),
      React.createElement('div',{className:'command-header-tools'},
        React.createElement(CommandPalette,{active,onChoose:domain=>{setActive(domain);setMessage('')}}),
-       React.createElement('span',{className:'connection-status',role:'status','aria-live':'polite'},'Engine: '+engine.status))),
+       React.createElement('span',{className:'connection-status',role:'status','aria-live':'polite'},'Engine: '+engine.status),
+       React.createElement(SessionBadge))),
    React.createElement('div',{className:'app-columns',style:{'--workspace-nav-width':navWidth+'px'}},
      React.createElement('nav',{'aria-label':'AI workspaces',className:'app-nav'},
        React.createElement('div',{className:'nav-heading'},'Workspaces'),
@@ -71,14 +80,15 @@ export default function Page(){
        title:'Use left and right arrow keys to resize; Home and End choose extremes'}),
      React.createElement('main',{id:'main',className:'app-main',tabIndex:-1},
        React.createElement('div',{className:'hero'},React.createElement('p',{className:'eyebrow'},"AI COMMAND WORKSPACE"),React.createElement('h1',null,"Everything you create, in one place"),React.createElement('p',null,"Choose a domain. The workspace interface is shared with Academy, without instructional overlays or courseware.")),
-       React.createElement(ProjectPortal,{product:"command",domain:active,engineOrigin:process.env.NEXT_PUBLIC_ENGINE_ORIGIN||'',companionOrigin:process.env.NEXT_PUBLIC_ACADEMY_ORIGIN||'',onOpenProject:project=>{if(WORKSPACE_DOMAINS.includes(project.kind))setActive(project.kind);setMessage('')}}),
-       React.createElement(ProjectExplorer,{domain:active,engineOrigin:process.env.NEXT_PUBLIC_ENGINE_ORIGIN||'',onOpenProject:p=>{if(WORKSPACE_DOMAINS.includes(p.kind))setActive(p.kind)}}),
-       React.createElement(JobTray,{client:null}),
+       React.createElement(ProjectPortal,{product:"command",domain:active,engineOrigin:origin,companionOrigin:process.env.NEXT_PUBLIC_ACADEMY_ORIGIN||'',onOpenProject:project=>{if(WORKSPACE_DOMAINS.includes(project.kind))setActive(project.kind);setMessage('')}}),
+       React.createElement(ProjectExplorer,{domain:active,engineOrigin:origin,onOpenProject:p=>{if(WORKSPACE_DOMAINS.includes(p.kind))setActive(p.kind)}}),
+       React.createElement(JobTray,{key:session.tenantId||'none',client:jobs}),
        React.createElement(ModelControls,{domain:active}),
        React.createElement(WorkspaceShell,{product:"command",domain:active,title:names[active]},
-         React.createElement(ToolPanel,{title:'Prepare your work'},
-           React.createElement('p',{className:'status-note'},engine.status==='connected'?'The engine is reachable. Provider operations must be verified separately.':'AI generation is not available in this workspace yet. Your input stays in this browser session until a project storage service is enabled.'),
-           React.createElement(DomainTool,{product:"command",domain:active,title:'Project brief',controls,values:{objective:drafts[active]||''},onFieldChange:change,onSubmit:()=>setMessage('The project brief has not been submitted. Persistent projects and AI workflows require verified engine services.'),submitLabel:'Review project readiness'}),
+         React.createElement(Workbench,{domain:active}),
+         React.createElement(ToolPanel,{title:'Project notes'},
+           React.createElement('p',{className:'status-note'},engine.status==='connected'?'The engine is reachable.':'The engine is '+(engine.status==='checking'?'being checked':'not available right now')+'; notes stay in this browser tab.'),
+           React.createElement(DomainTool,{product:"command",domain:active,title:'Project brief',controls,values:{objective:drafts[active]||''},onFieldChange:change,onSubmit:()=>setMessage(session.status==='signed-in'?'Notes kept for this tab. Paste them into the workbench prompt to generate with the engine.':'Notes kept for this tab. Sign in to generate with the engine.'),submitLabel:'Keep notes'}),
            React.createElement('p',{role:'status','aria-live':'polite',className:'action-message'},message))
        ))
    )

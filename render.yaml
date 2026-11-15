@@ -14,5 +14,6 @@ services:
       - {key: NODE_VERSION, value: "22"}
       - {key: NEXT_TELEMETRY_DISABLED, value: "1"}
       - {key: ENGINE_API_URL, sync: false}               # server-side engine base URL
+      - {key: SCC_SESSION_SECRET, sync: false}           # 64 hex chars; seals the session cookie
       - {key: NEXT_PUBLIC_ENGINE_ORIGIN, sync: false}    # browser-visible engine origin (build time)
       - {key: NEXT_PUBLIC_ACADEMY_ORIGIN, sync: false}   # companion app origin (build time)
